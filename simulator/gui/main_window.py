@@ -48,7 +48,11 @@ from simulator.gui.widgets.sidebar import Sidebar
 from simulator.gui.widgets.footer_bar import FooterBar
 from simulator.gui.widgets.goodbye_screen import GoodbyeScreen
 
-from simulator.gui.pages.home_page import HomePage, _ProductPage
+from simulator.gui.pages.home_page import HomePage
+from simulator.gui.pages.guide_page import GuidePage
+from simulator.gui.pages.control_page import ControlPage
+from simulator.gui.pages.tipbywire_page import TipByWirePage
+from simulator.gui.pages.epto_page import EptoPage
 from simulator.gui.pages.can_page import CanPage
 from simulator.gui.pages.can_tools_page import CanToolsPage
 from simulator.gui.pages.sensors_page import SensorsPage
@@ -243,10 +247,10 @@ class MainWindow(QMainWindow):
             can_channels=self._can_channels,
         )
 
-        self._page_guide     = _ProductPage("GUIDE",       "#FFD100")
-        self._page_control   = _ProductPage("CONTROL",     "#CC1020")
-        self._page_tipbywire = _ProductPage("TIP BY WIRE", "#FFD100")
-        self._page_epto      = _ProductPage("EPTO",        "#CC1020")
+        self._page_guide     = GuidePage()
+        self._page_control   = ControlPage()
+        self._page_tipbywire = TipByWirePage()
+        self._page_epto      = EptoPage()
 
         self._settings_general = _GeneralSettingsPage(profile=self._profile)
         self._settings_windows = _WindowsSettingsPage(profile=self._profile)

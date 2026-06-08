@@ -1,0 +1,436 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  AUTOSAR ARXML — CAN database for Hyva Simulator samples.
+  Compatible with cantools >= 38.0.0.
+
+  cantools reads CAN frame IDs from CAN-FRAME-TRIGGERING/IDENTIFIER.
+  Signal definitions come from I-SIGNAL-TO-I-PDU-MAPPING.
+
+  J1939 IDs (29-bit) use CAN-ADDRESSING-MODE = EXTENDED.
+  Standard 11-bit IDs use CAN-ADDRESSING-MODE = STANDARD.
+
+  Decimal IDs used (not hex):
+    EEC1  0x0CF00400 = 217056256   (J1939 engine speed)
+    CCVS  0x18FEF100 = 418023680   (J1939 vehicle speed)  [NOTE: use raw ID, not DBC flag]
+    ET    0x18FEEE00 = 418020864   (J1939 engine temperature)
+    Hyva  0x18FF0063 = 418054243   (Hyva sensor message)
+    HB    0x0C000063 = 201326691   (Hyva heartbeat)
+    OBD2R 0x7E8      = 2024        (OBD-II response, standard)
+    OBD2Q 0x7E0      = 2016        (OBD-II request,  standard)
+-->
+<AUTOSAR xmlns="http://autosar.org/schema/r4.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://autosar.org/schema/r4.0 autosar_4-0-3.xsd">
+  <AR-PACKAGES>
+    <AR-PACKAGE>
+      <SHORT-NAME>TruckDatabase</SHORT-NAME>
+      <AR-PACKAGES>
+
+        <!-- ══════════════════════════════════════════════════════
+             CAN Cluster — binds frame triggerings to CAN IDs
+             ══════════════════════════════════════════════════════ -->
+        <AR-PACKAGE>
+          <SHORT-NAME>Cluster</SHORT-NAME>
+          <ELEMENTS>
+            <CAN-CLUSTER>
+              <SHORT-NAME>Powertrain</SHORT-NAME>
+              <SPEED>250000</SPEED>
+              <CAN-CLUSTER-VARIANTS>
+                <CAN-CLUSTER-CONDITIONAL>
+                  <PHYSICAL-CHANNELS>
+                    <CAN-PHYSICAL-CHANNEL>
+                      <SHORT-NAME>Channel1</SHORT-NAME>
+                      <FRAME-TRIGGERINGS>
+
+                        <!-- EEC1 — J1939 Engine Speed (0x0CF00400 = 217056256) -->
+                        <CAN-FRAME-TRIGGERING>
+                          <SHORT-NAME>EEC1_EngineController</SHORT-NAME>
+                          <FRAME-REF DEST="FRAME">/TruckDatabase/Frames/EEC1_Frame</FRAME-REF>
+                          <IDENTIFIER>217056256</IDENTIFIER>
+                          <CAN-ADDRESSING-MODE>EXTENDED</CAN-ADDRESSING-MODE>
+                        </CAN-FRAME-TRIGGERING>
+
+                        <!-- CCVS — J1939 Vehicle Speed (0x18FEF100 = 418992384) -->
+                        <CAN-FRAME-TRIGGERING>
+                          <SHORT-NAME>CCVS_VehicleSpeed</SHORT-NAME>
+                          <FRAME-REF DEST="FRAME">/TruckDatabase/Frames/CCVS_Frame</FRAME-REF>
+                          <IDENTIFIER>418992384</IDENTIFIER>
+                          <CAN-ADDRESSING-MODE>EXTENDED</CAN-ADDRESSING-MODE>
+                        </CAN-FRAME-TRIGGERING>
+
+                        <!-- ET1 — J1939 Engine Temperature (0x18FEEE00 = 418991616) -->
+                        <CAN-FRAME-TRIGGERING>
+                          <SHORT-NAME>ET_EngineTemperature</SHORT-NAME>
+                          <FRAME-REF DEST="FRAME">/TruckDatabase/Frames/ET_Frame</FRAME-REF>
+                          <IDENTIFIER>418991616</IDENTIFIER>
+                          <CAN-ADDRESSING-MODE>EXTENDED</CAN-ADDRESSING-MODE>
+                        </CAN-FRAME-TRIGGERING>
+
+                        <!-- HyvaSensor — J1939 proprietary (0x18FF0063 = 419037283) -->
+                        <CAN-FRAME-TRIGGERING>
+                          <SHORT-NAME>HyvaSensorMessage</SHORT-NAME>
+                          <FRAME-REF DEST="FRAME">/TruckDatabase/Frames/HyvaSensor_Frame</FRAME-REF>
+                          <IDENTIFIER>419037283</IDENTIFIER>
+                          <CAN-ADDRESSING-MODE>EXTENDED</CAN-ADDRESSING-MODE>
+                        </CAN-FRAME-TRIGGERING>
+
+                        <!-- HyvaHeartbeat (0x0C000063 = 201326691) -->
+                        <CAN-FRAME-TRIGGERING>
+                          <SHORT-NAME>HyvaHeartbeat</SHORT-NAME>
+                          <FRAME-REF DEST="FRAME">/TruckDatabase/Frames/HyvaHB_Frame</FRAME-REF>
+                          <IDENTIFIER>201326691</IDENTIFIER>
+                          <CAN-ADDRESSING-MODE>EXTENDED</CAN-ADDRESSING-MODE>
+                        </CAN-FRAME-TRIGGERING>
+
+                        <!-- OBD-II Response (0x7E8 = 2024, standard 11-bit) -->
+                        <CAN-FRAME-TRIGGERING>
+                          <SHORT-NAME>OBD2_Response</SHORT-NAME>
+                          <FRAME-REF DEST="FRAME">/TruckDatabase/Frames/OBD2R_Frame</FRAME-REF>
+                          <IDENTIFIER>2024</IDENTIFIER>
+                          <CAN-ADDRESSING-MODE>STANDARD</CAN-ADDRESSING-MODE>
+                        </CAN-FRAME-TRIGGERING>
+
+                        <!-- OBD-II Request (0x7E0 = 2016, standard 11-bit) -->
+                        <CAN-FRAME-TRIGGERING>
+                          <SHORT-NAME>OBD2_Request</SHORT-NAME>
+                          <FRAME-REF DEST="FRAME">/TruckDatabase/Frames/OBD2Q_Frame</FRAME-REF>
+                          <IDENTIFIER>2016</IDENTIFIER>
+                          <CAN-ADDRESSING-MODE>STANDARD</CAN-ADDRESSING-MODE>
+                        </CAN-FRAME-TRIGGERING>
+
+                      </FRAME-TRIGGERINGS>
+                    </CAN-PHYSICAL-CHANNEL>
+                  </PHYSICAL-CHANNELS>
+                </CAN-CLUSTER-CONDITIONAL>
+              </CAN-CLUSTER-VARIANTS>
+            </CAN-CLUSTER>
+          </ELEMENTS>
+        </AR-PACKAGE>
+
+        <!-- ══════════════════════════════════════════════════════
+             FRAMES — byte length and PDU binding
+             ══════════════════════════════════════════════════════ -->
+        <AR-PACKAGE>
+          <SHORT-NAME>Frames</SHORT-NAME>
+          <ELEMENTS>
+
+            <FRAME>
+              <SHORT-NAME>EEC1_Frame</SHORT-NAME>
+              <FRAME-LENGTH>8</FRAME-LENGTH>
+              <PDU-TO-FRAME-MAPPINGS>
+                <PDU-TO-FRAME-MAPPING>
+                  <SHORT-NAME>EEC1_PDU_Map</SHORT-NAME>
+                  <PACKING-BYTE-ORDER>MOST-SIGNIFICANT-BYTE-LAST</PACKING-BYTE-ORDER>
+                  <PDU-REF DEST="I-SIGNAL-I-PDU">/TruckDatabase/PDUs/EEC1_PDU</PDU-REF>
+                  <START-POSITION>0</START-POSITION>
+                </PDU-TO-FRAME-MAPPING>
+              </PDU-TO-FRAME-MAPPINGS>
+            </FRAME>
+
+            <FRAME>
+              <SHORT-NAME>CCVS_Frame</SHORT-NAME>
+              <FRAME-LENGTH>8</FRAME-LENGTH>
+              <PDU-TO-FRAME-MAPPINGS>
+                <PDU-TO-FRAME-MAPPING>
+                  <SHORT-NAME>CCVS_PDU_Map</SHORT-NAME>
+                  <PACKING-BYTE-ORDER>MOST-SIGNIFICANT-BYTE-LAST</PACKING-BYTE-ORDER>
+                  <PDU-REF DEST="I-SIGNAL-I-PDU">/TruckDatabase/PDUs/CCVS_PDU</PDU-REF>
+                  <START-POSITION>0</START-POSITION>
+                </PDU-TO-FRAME-MAPPING>
+              </PDU-TO-FRAME-MAPPINGS>
+            </FRAME>
+
+            <FRAME>
+              <SHORT-NAME>ET_Frame</SHORT-NAME>
+              <FRAME-LENGTH>8</FRAME-LENGTH>
+              <PDU-TO-FRAME-MAPPINGS>
+                <PDU-TO-FRAME-MAPPING>
+                  <SHORT-NAME>ET_PDU_Map</SHORT-NAME>
+                  <PACKING-BYTE-ORDER>MOST-SIGNIFICANT-BYTE-LAST</PACKING-BYTE-ORDER>
+                  <PDU-REF DEST="I-SIGNAL-I-PDU">/TruckDatabase/PDUs/ET_PDU</PDU-REF>
+                  <START-POSITION>0</START-POSITION>
+                </PDU-TO-FRAME-MAPPING>
+              </PDU-TO-FRAME-MAPPINGS>
+            </FRAME>
+
+            <FRAME>
+              <SHORT-NAME>HyvaSensor_Frame</SHORT-NAME>
+              <FRAME-LENGTH>8</FRAME-LENGTH>
+              <PDU-TO-FRAME-MAPPINGS>
+                <PDU-TO-FRAME-MAPPING>
+                  <SHORT-NAME>HyvaSensor_PDU_Map</SHORT-NAME>
+                  <PACKING-BYTE-ORDER>MOST-SIGNIFICANT-BYTE-LAST</PACKING-BYTE-ORDER>
+                  <PDU-REF DEST="I-SIGNAL-I-PDU">/TruckDatabase/PDUs/HyvaSensor_PDU</PDU-REF>
+                  <START-POSITION>0</START-POSITION>
+                </PDU-TO-FRAME-MAPPING>
+              </PDU-TO-FRAME-MAPPINGS>
+            </FRAME>
+
+            <FRAME>
+              <SHORT-NAME>HyvaHB_Frame</SHORT-NAME>
+              <FRAME-LENGTH>8</FRAME-LENGTH>
+              <PDU-TO-FRAME-MAPPINGS>
+                <PDU-TO-FRAME-MAPPING>
+                  <SHORT-NAME>HyvaHB_PDU_Map</SHORT-NAME>
+                  <PACKING-BYTE-ORDER>MOST-SIGNIFICANT-BYTE-LAST</PACKING-BYTE-ORDER>
+                  <PDU-REF DEST="I-SIGNAL-I-PDU">/TruckDatabase/PDUs/HyvaHB_PDU</PDU-REF>
+                  <START-POSITION>0</START-POSITION>
+                </PDU-TO-FRAME-MAPPING>
+              </PDU-TO-FRAME-MAPPINGS>
+            </FRAME>
+
+            <FRAME>
+              <SHORT-NAME>OBD2R_Frame</SHORT-NAME>
+              <FRAME-LENGTH>8</FRAME-LENGTH>
+              <PDU-TO-FRAME-MAPPINGS>
+                <PDU-TO-FRAME-MAPPING>
+                  <SHORT-NAME>OBD2R_PDU_Map</SHORT-NAME>
+                  <PACKING-BYTE-ORDER>MOST-SIGNIFICANT-BYTE-LAST</PACKING-BYTE-ORDER>
+                  <PDU-REF DEST="I-SIGNAL-I-PDU">/TruckDatabase/PDUs/OBD2R_PDU</PDU-REF>
+                  <START-POSITION>0</START-POSITION>
+                </PDU-TO-FRAME-MAPPING>
+              </PDU-TO-FRAME-MAPPINGS>
+            </FRAME>
+
+            <FRAME>
+              <SHORT-NAME>OBD2Q_Frame</SHORT-NAME>
+              <FRAME-LENGTH>8</FRAME-LENGTH>
+              <PDU-TO-FRAME-MAPPINGS>
+                <PDU-TO-FRAME-MAPPING>
+                  <SHORT-NAME>OBD2Q_PDU_Map</SHORT-NAME>
+                  <PACKING-BYTE-ORDER>MOST-SIGNIFICANT-BYTE-LAST</PACKING-BYTE-ORDER>
+                  <PDU-REF DEST="I-SIGNAL-I-PDU">/TruckDatabase/PDUs/OBD2Q_PDU</PDU-REF>
+                  <START-POSITION>0</START-POSITION>
+                </PDU-TO-FRAME-MAPPING>
+              </PDU-TO-FRAME-MAPPINGS>
+            </FRAME>
+
+          </ELEMENTS>
+        </AR-PACKAGE>
+
+        <!-- ══════════════════════════════════════════════════════
+             PDUs — signal-to-bit mappings
+             ══════════════════════════════════════════════════════ -->
+        <AR-PACKAGE>
+          <SHORT-NAME>PDUs</SHORT-NAME>
+          <ELEMENTS>
+
+            <I-SIGNAL-I-PDU>
+              <SHORT-NAME>EEC1_PDU</SHORT-NAME>
+              <LENGTH>8</LENGTH>
+              <I-PDU-TIMING-SPECIFICATIONS>
+                <I-PDU-TIMING>
+                  <TRANSMISSION-MODE-DECLARATION>
+                    <TRANSMISSION-MODE-TRUE-TIMING>
+                      <CYCLIC-TIMING>
+                        <TIME-PERIOD>
+                          <VALUE>0.1</VALUE>
+                        </TIME-PERIOD>
+                      </CYCLIC-TIMING>
+                    </TRANSMISSION-MODE-TRUE-TIMING>
+                  </TRANSMISSION-MODE-DECLARATION>
+                </I-PDU-TIMING>
+              </I-PDU-TIMING-SPECIFICATIONS>
+              <I-SIGNAL-TO-PDU-MAPPINGS>
+                <I-SIGNAL-TO-I-PDU-MAPPING>
+                  <SHORT-NAME>EngineSpeed_Map</SHORT-NAME>
+                  <PACKING-BYTE-ORDER>MOST-SIGNIFICANT-BYTE-LAST</PACKING-BYTE-ORDER>
+                  <START-POSITION>24</START-POSITION>
+                  <I-SIGNAL-REF DEST="I-SIGNAL">/TruckDatabase/Signals/EngineSpeed</I-SIGNAL-REF>
+                </I-SIGNAL-TO-I-PDU-MAPPING>
+                <I-SIGNAL-TO-I-PDU-MAPPING>
+                  <SHORT-NAME>ActualTorque_Map</SHORT-NAME>
+                  <PACKING-BYTE-ORDER>MOST-SIGNIFICANT-BYTE-LAST</PACKING-BYTE-ORDER>
+                  <START-POSITION>8</START-POSITION>
+                  <I-SIGNAL-REF DEST="I-SIGNAL">/TruckDatabase/Signals/ActualTorque</I-SIGNAL-REF>
+                </I-SIGNAL-TO-I-PDU-MAPPING>
+              </I-SIGNAL-TO-PDU-MAPPINGS>
+            </I-SIGNAL-I-PDU>
+
+            <I-SIGNAL-I-PDU>
+              <SHORT-NAME>CCVS_PDU</SHORT-NAME>
+              <LENGTH>8</LENGTH>
+              <I-SIGNAL-TO-PDU-MAPPINGS>
+                <I-SIGNAL-TO-I-PDU-MAPPING>
+                  <SHORT-NAME>VehicleSpeed_Map</SHORT-NAME>
+                  <PACKING-BYTE-ORDER>MOST-SIGNIFICANT-BYTE-LAST</PACKING-BYTE-ORDER>
+                  <START-POSITION>8</START-POSITION>
+                  <I-SIGNAL-REF DEST="I-SIGNAL">/TruckDatabase/Signals/VehicleSpeed</I-SIGNAL-REF>
+                </I-SIGNAL-TO-I-PDU-MAPPING>
+              </I-SIGNAL-TO-PDU-MAPPINGS>
+            </I-SIGNAL-I-PDU>
+
+            <I-SIGNAL-I-PDU>
+              <SHORT-NAME>ET_PDU</SHORT-NAME>
+              <LENGTH>8</LENGTH>
+              <I-SIGNAL-TO-PDU-MAPPINGS>
+                <I-SIGNAL-TO-I-PDU-MAPPING>
+                  <SHORT-NAME>CoolantTemp_Map</SHORT-NAME>
+                  <PACKING-BYTE-ORDER>MOST-SIGNIFICANT-BYTE-LAST</PACKING-BYTE-ORDER>
+                  <START-POSITION>0</START-POSITION>
+                  <I-SIGNAL-REF DEST="I-SIGNAL">/TruckDatabase/Signals/CoolantTemp</I-SIGNAL-REF>
+                </I-SIGNAL-TO-I-PDU-MAPPING>
+              </I-SIGNAL-TO-PDU-MAPPINGS>
+            </I-SIGNAL-I-PDU>
+
+            <I-SIGNAL-I-PDU>
+              <SHORT-NAME>HyvaSensor_PDU</SHORT-NAME>
+              <LENGTH>8</LENGTH>
+              <I-SIGNAL-TO-PDU-MAPPINGS>
+                <I-SIGNAL-TO-I-PDU-MAPPING>
+                  <SHORT-NAME>InclinoLong_Map</SHORT-NAME>
+                  <PACKING-BYTE-ORDER>MOST-SIGNIFICANT-BYTE-LAST</PACKING-BYTE-ORDER>
+                  <START-POSITION>0</START-POSITION>
+                  <I-SIGNAL-REF DEST="I-SIGNAL">/TruckDatabase/Signals/InclinoLong</I-SIGNAL-REF>
+                </I-SIGNAL-TO-I-PDU-MAPPING>
+                <I-SIGNAL-TO-I-PDU-MAPPING>
+                  <SHORT-NAME>InclinoLat_Map</SHORT-NAME>
+                  <PACKING-BYTE-ORDER>MOST-SIGNIFICANT-BYTE-LAST</PACKING-BYTE-ORDER>
+                  <START-POSITION>16</START-POSITION>
+                  <I-SIGNAL-REF DEST="I-SIGNAL">/TruckDatabase/Signals/InclinoLat</I-SIGNAL-REF>
+                </I-SIGNAL-TO-I-PDU-MAPPING>
+              </I-SIGNAL-TO-PDU-MAPPINGS>
+            </I-SIGNAL-I-PDU>
+
+            <I-SIGNAL-I-PDU>
+              <SHORT-NAME>HyvaHB_PDU</SHORT-NAME>
+              <LENGTH>8</LENGTH>
+              <I-SIGNAL-TO-PDU-MAPPINGS>
+                <I-SIGNAL-TO-I-PDU-MAPPING>
+                  <SHORT-NAME>SystemState_Map</SHORT-NAME>
+                  <PACKING-BYTE-ORDER>MOST-SIGNIFICANT-BYTE-LAST</PACKING-BYTE-ORDER>
+                  <START-POSITION>16</START-POSITION>
+                  <I-SIGNAL-REF DEST="I-SIGNAL">/TruckDatabase/Signals/SystemState</I-SIGNAL-REF>
+                </I-SIGNAL-TO-I-PDU-MAPPING>
+                <I-SIGNAL-TO-I-PDU-MAPPING>
+                  <SHORT-NAME>SeqNumber_Map</SHORT-NAME>
+                  <PACKING-BYTE-ORDER>MOST-SIGNIFICANT-BYTE-LAST</PACKING-BYTE-ORDER>
+                  <START-POSITION>8</START-POSITION>
+                  <I-SIGNAL-REF DEST="I-SIGNAL">/TruckDatabase/Signals/SequenceNumber</I-SIGNAL-REF>
+                </I-SIGNAL-TO-I-PDU-MAPPING>
+              </I-SIGNAL-TO-PDU-MAPPINGS>
+            </I-SIGNAL-I-PDU>
+
+            <I-SIGNAL-I-PDU>
+              <SHORT-NAME>OBD2R_PDU</SHORT-NAME>
+              <LENGTH>8</LENGTH>
+              <I-SIGNAL-TO-PDU-MAPPINGS>
+                <I-SIGNAL-TO-I-PDU-MAPPING>
+                  <SHORT-NAME>OBD2_ServiceID_Map</SHORT-NAME>
+                  <PACKING-BYTE-ORDER>MOST-SIGNIFICANT-BYTE-LAST</PACKING-BYTE-ORDER>
+                  <START-POSITION>0</START-POSITION>
+                  <I-SIGNAL-REF DEST="I-SIGNAL">/TruckDatabase/Signals/OBD2_ServiceID</I-SIGNAL-REF>
+                </I-SIGNAL-TO-I-PDU-MAPPING>
+              </I-SIGNAL-TO-PDU-MAPPINGS>
+            </I-SIGNAL-I-PDU>
+
+            <I-SIGNAL-I-PDU>
+              <SHORT-NAME>OBD2Q_PDU</SHORT-NAME>
+              <LENGTH>8</LENGTH>
+              <I-SIGNAL-TO-PDU-MAPPINGS>
+                <I-SIGNAL-TO-I-PDU-MAPPING>
+                  <SHORT-NAME>OBD2_PID_Map</SHORT-NAME>
+                  <PACKING-BYTE-ORDER>MOST-SIGNIFICANT-BYTE-LAST</PACKING-BYTE-ORDER>
+                  <START-POSITION>8</START-POSITION>
+                  <I-SIGNAL-REF DEST="I-SIGNAL">/TruckDatabase/Signals/OBD2_RequestedPID</I-SIGNAL-REF>
+                </I-SIGNAL-TO-I-PDU-MAPPING>
+              </I-SIGNAL-TO-PDU-MAPPINGS>
+            </I-SIGNAL-I-PDU>
+
+          </ELEMENTS>
+        </AR-PACKAGE>
+
+        <!-- ══════════════════════════════════════════════════════
+             SIGNALS — bit length
+             ══════════════════════════════════════════════════════ -->
+        <AR-PACKAGE>
+          <SHORT-NAME>Signals</SHORT-NAME>
+          <ELEMENTS>
+
+            <I-SIGNAL>
+              <SHORT-NAME>EngineSpeed</SHORT-NAME>
+              <LENGTH>16</LENGTH>
+              <INIT-VALUE>
+                <NUMERICAL-VALUE-SPECIFICATION><VALUE>0</VALUE></NUMERICAL-VALUE-SPECIFICATION>
+              </INIT-VALUE>
+            </I-SIGNAL>
+
+            <I-SIGNAL>
+              <SHORT-NAME>ActualTorque</SHORT-NAME>
+              <LENGTH>8</LENGTH>
+              <INIT-VALUE>
+                <NUMERICAL-VALUE-SPECIFICATION><VALUE>125</VALUE></NUMERICAL-VALUE-SPECIFICATION>
+              </INIT-VALUE>
+            </I-SIGNAL>
+
+            <I-SIGNAL>
+              <SHORT-NAME>VehicleSpeed</SHORT-NAME>
+              <LENGTH>16</LENGTH>
+              <INIT-VALUE>
+                <NUMERICAL-VALUE-SPECIFICATION><VALUE>0</VALUE></NUMERICAL-VALUE-SPECIFICATION>
+              </INIT-VALUE>
+            </I-SIGNAL>
+
+            <I-SIGNAL>
+              <SHORT-NAME>CoolantTemp</SHORT-NAME>
+              <LENGTH>8</LENGTH>
+              <INIT-VALUE>
+                <NUMERICAL-VALUE-SPECIFICATION><VALUE>125</VALUE></NUMERICAL-VALUE-SPECIFICATION>
+              </INIT-VALUE>
+            </I-SIGNAL>
+
+            <I-SIGNAL>
+              <SHORT-NAME>InclinoLong</SHORT-NAME>
+              <LENGTH>16</LENGTH>
+              <INIT-VALUE>
+                <NUMERICAL-VALUE-SPECIFICATION><VALUE>20000</VALUE></NUMERICAL-VALUE-SPECIFICATION>
+              </INIT-VALUE>
+            </I-SIGNAL>
+
+            <I-SIGNAL>
+              <SHORT-NAME>InclinoLat</SHORT-NAME>
+              <LENGTH>16</LENGTH>
+              <INIT-VALUE>
+                <NUMERICAL-VALUE-SPECIFICATION><VALUE>18750</VALUE></NUMERICAL-VALUE-SPECIFICATION>
+              </INIT-VALUE>
+            </I-SIGNAL>
+
+            <I-SIGNAL>
+              <SHORT-NAME>SystemState</SHORT-NAME>
+              <LENGTH>8</LENGTH>
+              <INIT-VALUE>
+                <NUMERICAL-VALUE-SPECIFICATION><VALUE>0</VALUE></NUMERICAL-VALUE-SPECIFICATION>
+              </INIT-VALUE>
+            </I-SIGNAL>
+
+            <I-SIGNAL>
+              <SHORT-NAME>SequenceNumber</SHORT-NAME>
+              <LENGTH>8</LENGTH>
+              <INIT-VALUE>
+                <NUMERICAL-VALUE-SPECIFICATION><VALUE>0</VALUE></NUMERICAL-VALUE-SPECIFICATION>
+              </INIT-VALUE>
+            </I-SIGNAL>
+
+            <I-SIGNAL>
+              <SHORT-NAME>OBD2_ServiceID</SHORT-NAME>
+              <LENGTH>8</LENGTH>
+              <INIT-VALUE>
+                <NUMERICAL-VALUE-SPECIFICATION><VALUE>0</VALUE></NUMERICAL-VALUE-SPECIFICATION>
+              </INIT-VALUE>
+            </I-SIGNAL>
+
+            <I-SIGNAL>
+              <SHORT-NAME>OBD2_RequestedPID</SHORT-NAME>
+              <LENGTH>8</LENGTH>
+              <INIT-VALUE>
+                <NUMERICAL-VALUE-SPECIFICATION><VALUE>0</VALUE></NUMERICAL-VALUE-SPECIFICATION>
+              </INIT-VALUE>
+            </I-SIGNAL>
+
+          </ELEMENTS>
+        </AR-PACKAGE>
+
+      </AR-PACKAGES>
+    </AR-PACKAGE>
+  </AR-PACKAGES>
+</AUTOSAR>

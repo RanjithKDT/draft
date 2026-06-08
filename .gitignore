@@ -1,0 +1,39 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# SSH keys — NEVER commit private keys
+assets/keys/*.ppk
+assets/keys/*_pem
+assets/keys/*.pem
+assets/keys/*.key
+assets/keys/id_*
+
+# Secrets
+.env
+*.env
+
+# Logs
+*.log
+logs/
+
+# OS artefacts
+.DS_Store
+Thumbs.db

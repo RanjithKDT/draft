@@ -1,0 +1,74 @@
+VERSION ""
+
+NS_ :
+
+BS_:
+
+BU_: ECM TCM BCM HMI GW SIMULATOR
+
+BO_ 2364539904 EEC1_EngineController: 8 ECM
+ SG_ EngineSpeed : 24|16@1+ (0.125,0) [0|8031.875] "rpm" HMI,GW
+ SG_ ActualTorquePercent : 8|8@1+ (1,-125) [-125|125] "%" HMI
+ SG_ DriverDemandTorque : 16|8@1+ (1,-125) [-125|125] "%" HMI
+ SG_ TorqueMode : 0|4@1+ (1,0) [0|15] "" GW
+
+BO_ 2566844672 CCVS_VehicleSpeed: 8 ECM
+ SG_ WheelBasedVehicleSpeed : 8|16@1+ (0.00390625,0) [0|250.996] "km/h" HMI,GW
+ SG_ CruiseControlSetSpeed : 24|8@1+ (1,0) [0|250] "km/h" HMI
+ SG_ CruiseControlActive : 2|2@1+ (1,0) [0|3] "" HMI
+ SG_ BrakeSwitch : 4|2@1+ (1,0) [0|3] "" GW
+ SG_ ClutchSwitch : 6|2@1+ (1,0) [0|3] "" GW
+
+BO_ 2566843904 ET_EngineTemperature: 8 ECM
+ SG_ EngineCoolantTemp : 0|8@1+ (1,-40) [-40|210] "degC" HMI,GW
+ SG_ FuelTemp : 8|8@1+ (1,-40) [-40|210] "degC" HMI
+ SG_ OilTemp : 24|16@1+ (0.03125,-273) [-273|1735] "degC" HMI
+ SG_ TurboOilTemp : 40|16@1+ (0.03125,-273) [-273|1735] "degC" HMI
+
+BO_ 2566846208 EFL_EngineFluidLevel: 8 ECM
+ SG_ FuelLevel : 8|8@1+ (0.4,0) [0|100] "%" HMI
+ SG_ OilPressure : 16|8@1+ (4,0) [0|1000] "kPa" HMI
+ SG_ CoolantPressure : 24|8@1+ (2,0) [0|500] "kPa" HMI
+
+BO_ 2566848611 HyvaSensorMessage: 8 SIMULATOR
+ SG_ InclinationLongitudinal : 0|16@1+ (0.001,-20) [-20|80] "deg" GW,HMI
+ SG_ InclinationLateral : 16|16@1+ (0.001,-18.75) [-18.75|18.75] "deg" GW,HMI
+ SG_ SensorStatus : 32|8@1+ (1,0) [0|255] "" GW
+
+BO_ 2566806115 HyvaBodyTipped: 8 SIMULATOR
+ SG_ BodyTippedFlag : 0|1@1+ (1,0) [0|1] "" GW,HMI
+ SG_ TipAngle : 8|16@1+ (0.001,-20) [-20|80] "deg" GW,HMI
+ SG_ PressureSensorStatus : 24|8@1+ (1,0) [0|255] "" GW
+
+BO_ 2348810339 HyvaHeartbeat: 8 SIMULATOR
+ SG_ SimulatorSA : 0|8@1+ (1,0) [0|255] "" GW
+ SG_ SequenceNumber : 8|8@1+ (1,0) [0|255] "" GW
+ SG_ SystemState : 16|8@1+ (1,0) [0|255] "" GW
+ SG_ SubState : 24|8@1+ (1,0) [0|255] "" GW
+
+BO_ 2566845696 EBC1_BrakeController: 8 ECM
+ SG_ BrakePedalPosition : 8|8@1+ (0.4,0) [0|100] "%" HMI
+ SG_ ABSActiveControl : 0|2@1+ (1,0) [0|3] "" GW
+ SG_ EBSBrakeSwitch : 2|2@1+ (1,0) [0|3] "" GW
+
+BO_ 2566834688 DM1_Diagnostics: 8 ECM
+ SG_ MalfunctionIndicatorLamp : 0|2@1+ (1,0) [0|3] "" HMI
+ SG_ RedStopLamp : 2|2@1+ (1,0) [0|3] "" HMI
+ SG_ AmberWarningLamp : 4|2@1+ (1,0) [0|3] "" HMI
+ SG_ ProtectLamp : 6|2@1+ (1,0) [0|3] "" HMI
+ SG_ SPN_MSB : 16|8@1+ (1,0) [0|255] "" GW
+ SG_ SPN_MID : 24|8@1+ (1,0) [0|255] "" GW
+ SG_ FMI : 32|5@1+ (1,0) [0|31] "" GW
+ SG_ OccurrenceCount : 37|7@1+ (1,0) [0|127] "" GW
+
+BO_ 2024 OBD2_Response: 8 ECM
+ SG_ ServiceID : 0|8@1+ (1,0) [0|255] "" HMI
+ SG_ PID : 8|8@1+ (1,0) [0|255] "" HMI
+ SG_ DataByteA : 16|8@1+ (1,0) [0|255] "" HMI
+ SG_ DataByteB : 24|8@1+ (1,0) [0|255] "" HMI
+
+BO_ 2016 OBD2_Request: 8 HMI
+ SG_ RequestLength : 0|8@1+ (1,0) [0|7] "" ECM
+ SG_ ServiceID : 8|8@1+ (1,0) [0|255] "" ECM
+ SG_ RequestedPID : 16|8@1+ (1,0) [0|255] "" ECM
+

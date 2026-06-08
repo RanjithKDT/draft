@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<NetworkDefinition xmlns="http://kayak.2codeornot2code.org/1.0"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:noNamespaceSchemaLocation="Definition.xsd"
+                   version="1.0"
+                   name="truck_database"
+                   date="2026-03-22"
+                   author="Hyva Simulator"
+                   company="Hyva"
+                   copyright="Hyva Group">
+
+  <Node id="ECM" name="ECM"/>
+  <Node id="HMI" name="HMI"/>
+  <Node id="GW" name="GW"/>
+  <Node id="SIMULATOR" name="SIMULATOR"/>
+
+  <Bus name="Powertrain">
+
+    <!-- J1939 Engine Speed / Torque — EEC1 PGN 0xF004 SA=0x00 -->
+    <Message id="0x0CF00400" name="EEC1_EngineController" length="8" format="extended">
+      <Signal name="EngineSpeed" offset="24" length="16">
+        <Notes>Engine rotational speed. 0.125 rpm/bit.</Notes>
+        <Value type="unsigned" slope="0.125" intercept="0" unit="rpm" min="0" max="8031.875"/>
+      </Signal>
+      <Signal name="ActualTorquePercent" offset="8" length="8">
+        <Notes>Actual engine torque. 1 %/bit offset -125.</Notes>
+        <Value type="unsigned" slope="1" intercept="-125" unit="%" min="-125" max="125"/>
+      </Signal>
+      <Signal name="DriverDemandTorque" offset="16" length="8">
+        <Notes>Driver demand torque. 1 %/bit offset -125.</Notes>
+        <Value type="unsigned" slope="1" intercept="-125" unit="%" min="-125" max="125"/>
+      </Signal>
+    </Message>
+
+    <!-- J1939 Vehicle Speed — CCVS PGN 0xFEF1 SA=0x00 -->
+    <Message id="0x18FEF100" name="CCVS_VehicleSpeed" length="8" format="extended">
+      <Signal name="WheelBasedVehicleSpeed" offset="8" length="16">
+        <Notes>Wheel-based vehicle speed. 1/256 km/h per bit.</Notes>
+        <Value type="unsigned" slope="0.00390625" intercept="0" unit="km/h" min="0" max="250.996"/>
+      </Signal>
+      <Signal name="CruiseControlActive" offset="2" length="2">
+        <Notes>Cruise control active status.</Notes>
+        <Value type="unsigned" slope="1" intercept="0" unit=""/>
+      </Signal>
+      <Signal name="BrakeSwitch" offset="4" length="2">
+        <Notes>Brake pedal switch status.</Notes>
+        <Value type="unsigned" slope="1" intercept="0" unit=""/>
+      </Signal>
+    </Message>
+
+    <!-- J1939 Engine Temperature — ET1 PGN 0xFEEE SA=0x00 -->
+    <Message id="0x18FEEE00" name="ET_EngineTemperature" length="8" format="extended">
+      <Signal name="EngineCoolantTemp" offset="0" length="8">
+        <Notes>Engine coolant temperature. 1 degC/bit offset -40.</Notes>
+        <Value type="unsigned" slope="1" intercept="-40" unit="degC" min="-40" max="210"/>
+      </Signal>
+      <Signal name="FuelTemp" offset="8" length="8">
+        <Notes>Fuel temperature. 1 degC/bit offset -40.</Notes>
+        <Value type="unsigned" slope="1" intercept="-40" unit="degC" min="-40" max="210"/>
+      </Signal>
+      <Signal name="OilTemp" offset="24" length="16">
+        <Notes>Engine oil temperature. 0.03125 degC/bit offset -273.</Notes>
+        <Value type="unsigned" slope="0.03125" intercept="-273" unit="degC" min="-273" max="1735"/>
+      </Signal>
+    </Message>
+
+    <!-- J1939 Engine Fluid Level — EFL1 PGN 0xFEF7 SA=0x00 -->
+    <Message id="0x18FEF700" name="EFL_EngineFluidLevel" length="8" format="extended">
+      <Signal name="FuelLevel" offset="8" length="8">
+        <Notes>Fuel level. 0.4 %/bit.</Notes>
+        <Value type="unsigned" slope="0.4" intercept="0" unit="%" min="0" max="100"/>
+      </Signal>
+      <Signal name="OilPressure" offset="16" length="8">
+        <Notes>Engine oil pressure. 4 kPa/bit.</Notes>
+        <Value type="unsigned" slope="4" intercept="0" unit="kPa" min="0" max="1000"/>
+      </Signal>
+    </Message>
+
+    <!-- Hyva Simulator — Sensor Message SA=0x63 -->
+    <Message id="0x18FF0063" name="HyvaSensorMessage" length="8" format="extended">
+      <Signal name="InclinationLongitudinal" offset="0" length="16">
+        <Notes>Body longitudinal tilt angle. 0.001 deg/bit offset -20.</Notes>
+        <Value type="unsigned" slope="0.001" intercept="-20" unit="deg" min="-20" max="80"/>
+      </Signal>
+      <Signal name="InclinationLateral" offset="16" length="16">
+        <Notes>Body lateral tilt angle. 0.001 deg/bit offset -18.75.</Notes>
+        <Value type="unsigned" slope="0.001" intercept="-18.75" unit="deg" min="-18.75" max="18.75"/>
+      </Signal>
+      <Signal name="SensorStatus" offset="32" length="8">
+        <Notes>Sensor diagnostic status byte.</Notes>
+        <Value type="unsigned" slope="1" intercept="0" unit=""/>
+      </Signal>
+    </Message>
+
+    <!-- Hyva Simulator — Heartbeat SA=0x63 -->
+    <Message id="0x0C000063" name="HyvaHeartbeat" length="8" format="extended">
+      <Signal name="SimulatorSA" offset="0" length="8">
+        <Notes>Source address of simulator node (0x63).</Notes>
+        <Value type="unsigned" slope="1" intercept="0" unit=""/>
+      </Signal>
+      <Signal name="SequenceNumber" offset="8" length="8">
+        <Notes>Incrementing counter per heartbeat.</Notes>
+        <Value type="unsigned" slope="1" intercept="0" unit=""/>
+      </Signal>
+      <Signal name="SystemState" offset="16" length="8">
+        <Notes>Current system operational state.</Notes>
+        <Value type="unsigned" slope="1" intercept="0" unit=""/>
+      </Signal>
+      <Signal name="SubState" offset="24" length="8">
+        <Notes>System sub-state (idle, active, deactivated).</Notes>
+        <Value type="unsigned" slope="1" intercept="0" unit=""/>
+      </Signal>
+    </Message>
+
+    <!-- Hyva Simulator — Body Tipped SA=0x63 -->
+    <Message id="0x18FE5A63" name="HyvaBodyTipped" length="8" format="extended">
+      <Signal name="BodyTippedFlag" offset="0" length="1">
+        <Notes>1 = body is currently in tipped position.</Notes>
+        <Value type="unsigned" slope="1" intercept="0" unit=""/>
+      </Signal>
+      <Signal name="TipAngle" offset="8" length="16">
+        <Notes>Current tip angle. 0.001 deg/bit offset -20.</Notes>
+        <Value type="unsigned" slope="0.001" intercept="-20" unit="deg" min="-20" max="80"/>
+      </Signal>
+    </Message>
+
+    <!-- Standard 11-bit — OBD-II ECU Response (0x7E8) -->
+    <Message id="0x7E8" name="OBD2_Response" length="8" format="standard">
+      <Signal name="ResponseLength" offset="0" length="8">
+        <Notes>Number of valid data bytes following.</Notes>
+        <Value type="unsigned" slope="1" intercept="0" unit=""/>
+      </Signal>
+      <Signal name="ServiceID" offset="8" length="8">
+        <Notes>OBD-II service ID (response = request + 0x40).</Notes>
+        <Value type="unsigned" slope="1" intercept="0" unit=""/>
+      </Signal>
+      <Signal name="PID" offset="16" length="8">
+        <Notes>Parameter ID requested.</Notes>
+        <Value type="unsigned" slope="1" intercept="0" unit=""/>
+      </Signal>
+      <Signal name="DataByteA" offset="24" length="8">
+        <Notes>First data byte of PID response.</Notes>
+        <Value type="unsigned" slope="1" intercept="0" unit=""/>
+      </Signal>
+    </Message>
+
+    <!-- Standard 11-bit — OBD-II Tester Request (0x7E0) -->
+    <Message id="0x7E0" name="OBD2_Request" length="8" format="standard">
+      <Signal name="RequestLength" offset="0" length="8">
+        <Notes>Number of payload bytes in this request.</Notes>
+        <Value type="unsigned" slope="1" intercept="0" unit=""/>
+      </Signal>
+      <Signal name="ServiceID" offset="8" length="8">
+        <Notes>OBD-II service (0x01 = show current data).</Notes>
+        <Value type="unsigned" slope="1" intercept="0" unit=""/>
+      </Signal>
+      <Signal name="RequestedPID" offset="16" length="8">
+        <Notes>Parameter ID to query (e.g. 0x0C = engine RPM).</Notes>
+        <Value type="unsigned" slope="1" intercept="0" unit=""/>
+      </Signal>
+    </Message>
+
+  </Bus>
+
+</NetworkDefinition>

@@ -1,0 +1,27 @@
+# Hyva Simulator — Runtime Requirements
+# Python 3.12 required
+
+# Core
+loguru>=0.7.0
+python-interface==1.6.1
+
+# CAN
+python-can>=4.3.0
+pyserial>=3.5
+
+# GUI
+PySide6>=6.7.0
+qtawesome>=1.3.0
+
+# SSH (GW connection)
+paramiko>=3.4.0
+
+# RPC server (automation / pytest / behave hooks — port 18200)
+rpyc>=6.0.0
+
+# CAN file analysis (CAN Tools page — .dbc / .kcd / .arxml database files)
+# Optional — install for DB file support; log files (.asc .blf .trc) work without it.
+cantools>=38.0.0
+
+# Windows only — install manually on Windows:
+# pip install pywin32 wmi
